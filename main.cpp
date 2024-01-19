@@ -16,8 +16,8 @@ using namespace std;
 int nScreenWidth = 120;
 int nScreenHeight = 40;
 
-float fPlayerX = 0.0f;
-float fPlayerY = 0.0f;
+float fPlayerX = 8.0f;
+float fPlayerY = 8.0f;
 float fPlayerA = 0.0f;
 
 int nMapHeight = 16;
@@ -72,6 +72,29 @@ int main() {
 				int nTestX = (int)(fPlayerX + fEyeX * fDistanceToWall);
 				int nTestY = (int)(fPlayerY + fEyeY * fDistanceToWall);
 
+				if (nTestX < 0 || nTestX >= nMapWidth || nTestY < 0 || nTestY >= nMapHeight) {
+					bHitWall = true;
+					fDistanceToWall = fDepth;
+				} else {
+					// Ray is inbounds
+					if (map[nTestY * nMapWidth + nTestX] == '#') {
+						bHitWall = true;
+					}
+				}
+			}
+
+			// Calculate distance to floor/ceiling
+			int nCeiling = (float)(nScreenHeight / 2.0) - nScreenHeight / ((float)fDistanceToWall);
+			int nFloor = nScreenHeight - nCeiling;
+
+			for (int y = 0; y < nScreenHeight; y++) {
+				if (y < nCeiling) {
+					screen[y * nScreenWidth + i] = ' '; // Blank space for the ceiling
+				} else (y > nCeiling && y <= nFloor) {
+					screen[y * nScreenWidth + i] = '#'; // Hash for the wall
+				} else {
+					screen[y * nScreenWidth + i] = ' '; // Blank for the floor
+				}
 			}
 		}
 
